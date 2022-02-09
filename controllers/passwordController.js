@@ -1,3 +1,5 @@
+const ObjectID = require('mongodb').ObjectID; 
+
 // input : db - database object
 // output : a promise containing all the passwords from database 
 async function getPasswords(db){
@@ -27,7 +29,28 @@ function addPassword(db, serviceName, username, password, userid){
     });
 }
 
+// input : db - database object
+//         accountID - !!! the object we want to update
+//         serviceName - google/facebook/instagram etc
+//         username/email - based on the user account on that service
+//         password - based on the user account 
+// output : a promise containing the created password
+function updatePassword(db, accountID,serviceName, username, password){
+    return db.collection("passwords").findOneAndUpdate(
+        {_id:ObjectID(accountID)},
+        {
+            $set : {
+                service : serviceName,
+                username : username,
+                password : password
+            }
+        },
+        {upsert: true}
+    );
+}
+
 module.exports = {
     getPasswords,
-    addPassword
+    addPassword,
+    updatePassword
 }

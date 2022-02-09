@@ -9,6 +9,7 @@ const passwordController = require('../controllers/passwordController');
 
 const getPasswords = passwordController.getPasswords;
 const addPassword =  passwordController.addPassword;
+const updatePassword = passwordController.updatePassword;
 
 router.get('/', async (req, res) => {
     getPasswords(dbObj).then( (result) => {
@@ -22,5 +23,10 @@ router.post('/add/:userid', (req, res) => {
     });
 });
 
+router.put('/update/:accountID', (req, res) => {
+    updatePassword(dbObj,req.params.accountID, "facebook2", "f2", "12345595695959").then( (result) => {
+        res.json(result)
+    })
+})
 
 module.exports = router;
