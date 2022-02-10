@@ -10,6 +10,7 @@ const passwordController = require('../controllers/passwordController');
 const getPasswords = passwordController.getPasswords;
 const addPassword =  passwordController.addPassword;
 const updatePassword = passwordController.updatePassword;
+const deletePassword = passwordController.deletePassword;
 
 router.get('/', async (req, res) => {
     getPasswords(dbObj).then( (result) => {
@@ -24,9 +25,16 @@ router.post('/add/:userid', (req, res) => {
 });
 
 router.put('/update/:accountID', (req, res) => {
-    updatePassword(dbObj,req.params.accountID, "facebook2", "f2", "12345595695959").then( (result) => {
-        res.json(result)
-    })
+    updatePassword(dbObj,req.params.accountID, req.body.service, req.body.username, req.body.password)
+        .then( (result) => {
+            res.json(result.value);
+        }
+    ).catch( err => console.log(err) );
+})
+
+router.delete('/delete/:accountID', (req, res) => {
+    deletePassword(dbObj, req.params.accountID).then( result => res.json({message:result.deletedCount}))
+    .catch(err => res.json(err))
 })
 
 module.exports = router;

@@ -34,7 +34,7 @@ function addPassword(db, serviceName, username, password, userid){
 //         serviceName - google/facebook/instagram etc
 //         username/email - based on the user account on that service
 //         password - based on the user account 
-// output : a promise containing the created password
+// output : a promise containing the updated password
 function updatePassword(db, accountID,serviceName, username, password){
     return db.collection("passwords").findOneAndUpdate(
         {_id:ObjectID(accountID)},
@@ -45,12 +45,20 @@ function updatePassword(db, accountID,serviceName, username, password){
                 password : password
             }
         },
-        {upsert: true}
+        {upsert: false, returnOriginal:false} //return the updated document
     );
+}
+
+// input : db - database object
+//         accountID - !!! the document id  we want to delete
+// output : a promise containing the result of the query
+function deletePassword(db, accountID){
+    return db.collection("passwords").deleteOne({_id:ObjectID(accountID)})
 }
 
 module.exports = {
     getPasswords,
     addPassword,
-    updatePassword
+    updatePassword,
+    deletePassword
 }
