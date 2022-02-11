@@ -6,7 +6,7 @@ app.use(express.urlencoded({
     extended: true
 }))
 app.use('/passwords', require('./routes/passwords'));
-app.use('/users', require('./routes/users'));
+app.use('/users', require('./routes/auth'));
 
 app.listen(3000, () => {
     console.log('server has started');
