@@ -22,7 +22,7 @@ async function logUser(db, email, password){
 // output : a promise containing the authentication token - (the user's id )
 async function registerUser(db, username, password){
     try {
-        const registeredUser = await db.collection("users").insertOne({username, password});
+        const registeredUser = await db.collection("users").insertOne({email:username, password});
         return {token : registeredUser.insertedId}
     } catch (error) {
         return {error: error.message}
