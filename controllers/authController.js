@@ -8,12 +8,14 @@ async function logUser(db, email, password){
     const cursor = await db.collection("users").find({email:email}) //memorize the db cursor returned by find 
     const result = await cursor.toArray() //store as array the cursor result 
 
-    for (let index = 0; index < result.length; index++) {  //go through the array 
-        if(result[index].password == password) //if the password matches anything 
-            return {token : result[index]._id};  //return the token as js object 
+    if(result.length > 0){ //if we have any records
+        for (let index = 0; index < result.length; index++) {  //go through the array 
+            if(result[index].password == password) //if the password matches anything 
+                return {token : result[index]._id};  //return the token as js object 
+        }
     }
 
-    return 'not logged';
+    return {error:'not logged'};
 }
 
 // input : db - database object

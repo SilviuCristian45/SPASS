@@ -2,8 +2,8 @@ const ObjectID = require('mongodb').ObjectID;
 
 // input : db - database object
 // output : a promise containing all the passwords from database 
-async function getPasswords(db){
-    const cursor = db.collection("passwords").find({});
+async function getPasswords(db, userid){
+    const cursor = db.collection("passwords").find({userid});
     const result = await cursor.toArray()
     return result
 }

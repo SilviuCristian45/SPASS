@@ -12,8 +12,8 @@ const addPassword =  passwordController.addPassword;
 const updatePassword = passwordController.updatePassword;
 const deletePassword = passwordController.deletePassword;
 
-router.get('/', async (req, res) => {
-    getPasswords(dbObj).then( (result) => {
+router.get('/:userid', async (req, res) => {
+    getPasswords(dbObj, req.params.userid).then( (result) => {
         res.send(result);
     })
 });
