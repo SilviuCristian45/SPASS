@@ -1,4 +1,5 @@
 const ObjectID = require('mongodb').ObjectID; 
+const getRandomValues = require('get-random-values')
 
 // input : db - database object
 //         email - the email sent through body
@@ -25,11 +26,20 @@ async function logUser(db, email, password){
 async function registerUser(db, username, password){
     try {
         const registeredUser = await db.collection("users").insertOne({email:username, password});
-        return {token : registeredUser.insertedId}
+        const token = getToken(20)
+        const newToken = await db.collection("tokens").insertOne({
+            userid : registeredUser.insertedId,
+            token : token
+        });
+        return {token : token}
     } catch (error) {
         return {error: error.message}
     }
-    
+}
+
+function getToken(length){
+    let token = new Uint8Array(length);
+    return getRandomValues(token).toString();
 }
 
 module.exports = {
