@@ -11,8 +11,14 @@ async function logUser(db, email, password){
 
     if(result.length > 0){ //if we have any records
         for (let index = 0; index < result.length; index++) {  //go through the array 
-            if(result[index].password == password) //if the password matches anything 
-                return {token : result[index]._id};  //return the token as js object 
+            if(result[index].password == password){ //if the password matches anything 
+                //return the token as js object 
+                const userid = result[index]._id;
+                //query the tokens collection
+                const cursor2 = await db.collection("tokens").find({userid: userid})
+                const result2 = await cursor2.toArray()
+                return {token : result2[0].token} //return token
+            }
         }
     }
 
