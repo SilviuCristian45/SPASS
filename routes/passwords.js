@@ -12,14 +12,14 @@ const addPassword =  passwordController.addPassword;
 const updatePassword = passwordController.updatePassword;
 const deletePassword = passwordController.deletePassword;
 
-router.get('/:userid', async (req, res) => {
-    getPasswords(dbObj, req.params.userid).then( (result) => {
+router.get('/:userToken', async (req, res) => {
+    getPasswords(dbObj, req.params.userToken).then( (result) => {
         res.send(result);
     })
 });
 
-router.post('/add/:userid', (req, res) => {
-    addPassword(dbObj, req.body.service, req.body.username, req.body.password, req.params.userid).then( (result) => {
+router.post('/add/:userToken', (req, res) => {
+    addPassword(dbObj, req.body.service, req.body.username, req.body.password, req.params.userToken).then( (result) => {
         res.json(result)
     });
 });
