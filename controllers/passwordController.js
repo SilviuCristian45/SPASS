@@ -38,8 +38,8 @@ async function addPassword(db, serviceName, username, password, userToken){
 //         username/email - based on the user account on that service
 //         password - based on the user account 
 // output : a promise containing the updated password
-function updatePassword(db, accountID,serviceName, username, password){
-    return db.collection("passwords").findOneAndUpdate(
+async function updatePassword(db, accountID,serviceName, username, password){
+    const result =  await db.collection("passwords").findOneAndUpdate(
         {_id:ObjectID(accountID)},
         {
             $set : {
@@ -50,13 +50,16 @@ function updatePassword(db, accountID,serviceName, username, password){
         },
         {upsert: false, returnOriginal:false} //return the updated document
     );
+    return result.value;
 }
 
 // input : db - database object
 //         accountID - !!! the document id  we want to delete
 // output : a promise containing the result of the query
-function deletePassword(db, accountID){
-    return db.collection("passwords").deleteOne({_id:ObjectID(accountID)})
+async function deletePassword(db, accountID){
+    //console.log(accountID)
+    const result = await db.collection("passwords").deleteOne({_id : ObjectID(accountID)});
+    return {message:result.deletedCount}
 }
 
 module.exports = {
