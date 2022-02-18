@@ -1,17 +1,30 @@
 const ObjectID = require('mongodb').ObjectID; 
+const utilController = require('./utilController');
+const validateAccount = utilController.validateAccount;
 
 // input : db - database object
 // output : a promise containing all the passwords from database 
 async function getPasswords(db, userToken){
     const userID = await getUserID(db, userToken)
-    const cursor = await db.collection("passwords").find({userid:userID})
-    return cursor.toArray()
+    try {
+        const cursor = await db.collection("passwords").find({userid:userID})
+        const result = await cursor.toArray();
+        if(result.length == 0)
+            return 'no passwords';
+        return result;
+    } catch (error) {
+        return 'fail to get passwords based on your token'
+    }
 }
 
 async function getUserID(db, userToken){
-    const cursor = db.collection("tokens").find({token:userToken});
-    const result = await cursor.toArray()
-    return result[0].userid;
+    try {
+        const cursor = db.collection("tokens").find({token:userToken});
+        const result = await cursor.toArray()
+        return result[0].userid;
+    } catch (error) {
+        return 'fail to get user ID based on your token'
+    }
 }
 
 // input : db - database object
@@ -28,8 +41,13 @@ async function addPassword(db, serviceName, username, password, userToken){
         password:password,
         userid:userid
     }
-    const flag = await db.collection("passwords").insertOne(newAccount);
-    return JSON.parse(flag).ok;
+    if(validateAccount(newAccount)){
+        const flag = await db.collection("passwords").insertOne(newAccount);
+        return JSON.parse(flag).ok;
+    }
+
+    return 'No valid data';
+    
 }
 
 // input : db - database object
