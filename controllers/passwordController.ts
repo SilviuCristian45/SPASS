@@ -4,7 +4,7 @@ const validateAccount = utilController.validateAccount;
 
 // input : db - database object
 // output : a promise containing all the passwords from database 
-async function getPasswords(db, userToken){
+export async function getPasswords(db: any, userToken: string){
     const userID = await getUserID(db, userToken)
     try {
         const cursor = await db.collection("passwords").find({userid:userID})
@@ -17,7 +17,7 @@ async function getPasswords(db, userToken){
     }
 }
 
-async function getUserID(db, userToken){
+async function getUserID(db: any, userToken: string){
     try {
         const cursor = db.collection("tokens").find({token:userToken});
         const result = await cursor.toArray()
@@ -33,9 +33,9 @@ async function getUserID(db, userToken){
 //         password - based on the user account 
 //         userid - the user which created this account 
 // output : a promise containing the flag if the password was added or not 
-async function addPassword(db, serviceName, username, password, userToken){
+export async function addPassword(db: any, serviceName: string, username: string, password: string, userToken: string){
     const userid = await getUserID(db, userToken);
-    newAccount = {
+    const newAccount = {
         service:serviceName,
         username:username,
         password:password,
@@ -43,7 +43,7 @@ async function addPassword(db, serviceName, username, password, userToken){
     }
     if(validateAccount(newAccount)){
         const flag = await db.collection("passwords").insertOne(newAccount);
-        return JSON.parse(flag).ok;
+        return JSON.parse(flag);
     }
 
     return 'No valid data';
@@ -56,7 +56,7 @@ async function addPassword(db, serviceName, username, password, userToken){
 //         username/email - based on the user account on that service
 //         password - based on the user account 
 // output : a promise containing the updated password
-async function updatePassword(db, accountID,serviceName, username, password){
+export async function updatePassword(db: any, accountID: string,serviceName: string, username: string, password: string){
     const result =  await db.collection("passwords").findOneAndUpdate(
         {_id:ObjectID(accountID)},
         {
@@ -74,15 +74,8 @@ async function updatePassword(db, accountID,serviceName, username, password){
 // input : db - database object
 //         accountID - !!! the document id  we want to delete
 // output : a promise containing the result of the query
-async function deletePassword(db, accountID){
+export async function deletePassword(db: any, accountID: string){
     //console.log(accountID)
     const result = await db.collection("passwords").deleteOne({_id : ObjectID(accountID)});
     return {message:result.deletedCount}
-}
-
-module.exports = {
-    getPasswords,
-    addPassword,
-    updatePassword,
-    deletePassword
 }

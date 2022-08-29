@@ -5,7 +5,7 @@ const getRandomValues = require('get-random-values')
 //         email - the email sent through body
 //         password - the password sent through body 
 // output : a promise containing the authentication token - (the user's id )
-async function logUser(db, email, password){
+export async function logUser(db: any, email: string, password: string): Promise<any>{
     const cursor = await db.collection("users").find({email:email}) //memorize the db cursor returned by find 
     const result = await cursor.toArray() //store as array the cursor result 
 
@@ -21,7 +21,6 @@ async function logUser(db, email, password){
             }
         }
     }
-
     return {error:'not logged'};
 }
 
@@ -29,7 +28,7 @@ async function logUser(db, email, password){
 //         email - the email sent through body
 //         password - the password sent through body 
 // output : a promise containing the authentication token - (the user's id )
-async function registerUser(db, username, password){
+export async function registerUser(db: any, username: string, password: string){
     try {
         const registeredUser = await db.collection("users").insertOne({email:username, password});
         const token = getToken(20)
@@ -38,17 +37,12 @@ async function registerUser(db, username, password){
             token : token
         });
         return {token : token}
-    } catch (error) {
+    } catch (error: any) {
         return {error: error.message}
     }
 }
 
-function getToken(length){
+function getToken(length: number){
     let token = new Uint8Array(length);
     return getRandomValues(token).toString();
-}
-
-module.exports = {
-    logUser,
-    registerUser
 }

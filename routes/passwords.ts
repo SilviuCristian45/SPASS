@@ -1,16 +1,11 @@
-const express = require('express');
-const router = express.Router()
+import express from 'express'
+import {db} from '../database'
+import {addPassword, getPasswords, updatePassword, deletePassword} from '../controllers/passwordController'
 
+export const router = express.Router()
 //Database connection
 let dbObj;
-require('../database').then( db => dbObj = db);
-
-const passwordController = require('../controllers/passwordController');
-
-const getPasswords = passwordController.getPasswords;
-const addPassword =  passwordController.addPassword;
-const updatePassword = passwordController.updatePassword;
-const deletePassword = passwordController.deletePassword;
+db.then( () => dbObj = db).catch( err => console.log(err))
 
 router.get('/:userToken', async (req, res) => {
     getPasswords(dbObj, req.params.userToken).then( (result) => {
@@ -33,5 +28,3 @@ router.delete('/delete/:accountID', (req, res) => {
     deletePassword(dbObj, req.params.accountID).then( result => res.json(result) )
         .catch(err => res.json(err))
 })
-
-module.exports = router;
